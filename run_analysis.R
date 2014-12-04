@@ -51,12 +51,19 @@ run_analysis <- function(directoryname){
         # Build the data.frame
         merged <- rbind(cbind(var, subject_test, new), cbind(var_train, subject_test_train, new_train))
         
-        #Build the average data.frame. First splitting the original table to calculate the mean by pearson and activity
+        #Build the average data.frame. First splitting the original table to calculate the mean by person and activity
         #After rebuilding the data.frame
-        s <- split(merged, list(merged_ordered$Activity, merged_ordered$Subject))
+        s <- split(merged, list(merged$Activity, merged$Subject))
+        
+        ## The mean is calculated, however the column 1 and 2 are eliminated in the calculations because they hold the subject and
+        ##the activity
         mean_list <- lapply(s, function(x) colMeans(x[, -c(1,2)]))
+        
+        ##Here the data.frame is created using the list "mean_list", the rownames will be the names of the list index.
         df <- data.frame(t(sapply(mean_list,c)))
+        
+        ## It is necessary to include a row with the rownames 
         df$Activityandsubj <- rownames(df)
-        df <- df[c(80,1:79)]
-        df
+        df <- df[,c(80,1:79)]
+        
 }
